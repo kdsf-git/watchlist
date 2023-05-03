@@ -49,8 +49,10 @@ public class DataHandler {
 	
 	public static ResponseObject getDetails(int id) {
 		ResponseObject r = details.getOrDefault(id, new ResponseObject(new ResponseObject.Data(new ResponseObject.Data.Media(id, 0, new String[] {}, new ResponseObject.Data.Media.Title("", ""), new ResponseObject.Data.Media.CoverImage("https://jatheon.com/wp-content/uploads/2018/03/404-image.png")))));
-		if(r.data.media.id == 0)
+		if(r.data.media.id == 0) {
 			requestInfoById(id);
+			System.out.println("failed to get #" + r.data.media.id + ", retrying");
+		}
 		return r;
 	}
 	

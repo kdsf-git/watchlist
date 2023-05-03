@@ -16,9 +16,13 @@ public class SearchListView extends ListView implements HasUrlParameter<String> 
 	@Override
 	public void setParameter(BeforeEvent event, String parameter) {
 		for(int i = 0; i < responseObjectLayouts.size(); i++) {
-			if(!(responseObjectLayouts.get(i).getResponseObject().data.media.title.english.toLowerCase().contains(parameter) || responseObjectLayouts.get(i).getResponseObject().data.media.title.romaji.toLowerCase().contains(parameter))) {
-				responseObjectLayouts.remove(i);
-				i--;
+			try {
+				if(!(responseObjectLayouts.get(i).getResponseObject().data.media.title.english.toLowerCase().contains(parameter) || responseObjectLayouts.get(i).getResponseObject().data.media.title.romaji.toLowerCase().contains(parameter))) {
+					responseObjectLayouts.remove(i);
+					i--;
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 		for(int i = 0; i < responseObjectLayouts.size(); i++) {
