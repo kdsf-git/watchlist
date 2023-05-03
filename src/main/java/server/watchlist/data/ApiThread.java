@@ -50,6 +50,8 @@ public class ApiThread implements Runnable {
 				continue;
 			//return responseString to other thread
 			responseQ.offer(responseString);
+			
+			lastT = System.nanoTime();
 		}
 	}
 
