@@ -87,7 +87,8 @@ public class DataHandler {
 	}
 	
 	private static void queueRequest(String requestString) {
-		requestQ.offer(requestString);
+		if(!requestQ.contains(requestString))
+			requestQ.offer(requestString);
 	}
 	
 	private static <T> String buildRequestString(String variableType, String variableName, T variableValue) {

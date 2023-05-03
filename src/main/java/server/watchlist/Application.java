@@ -25,7 +25,7 @@ public class Application {
     
     public static void log(String s) {
     	try {
-			Files.write(Path.of("log.txt"), s.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+			Files.write(Path.of("log.txt"), ("\n" + s).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
