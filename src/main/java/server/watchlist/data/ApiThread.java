@@ -11,7 +11,7 @@ import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ApiThread implements Runnable {
-	private final long DELTA_T = 3_00000000L;
+	private final long DELTA_T = 3_000000000L;
 
 	private ConcurrentLinkedQueue<String> requestQ;
 	private ConcurrentLinkedQueue<String> responseQ;
