@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ResponseObject {
-	public Data data;
+	public Data data = new Data(new Data.Media(0, 0, new String[] {}, new Data.Media.Title("", ""), new Data.Media.CoverImage("")));
 	
 	@JsonCreator
 	public ResponseObject(@JsonProperty("Data") Data data) {
@@ -15,8 +15,8 @@ public class ResponseObject {
 		public Media media;
 		
 		@JsonCreator
-		public Data(@JsonProperty("Media") Media media) {
-			this.media = media;
+		public Data(@JsonProperty("Media") Media media2) {
+			this.media = media2;
 		}
 		
 		public static class Media {

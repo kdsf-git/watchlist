@@ -48,7 +48,10 @@ public class DataHandler {
 	}
 	
 	public static ResponseObject getDetails(int id) {
-		return details.getOrDefault(id, new ResponseObject(new ResponseObject.Data(new ResponseObject.Data.Media(id, 0, new String[] {}, new ResponseObject.Data.Media.Title("", ""), new ResponseObject.Data.Media.CoverImage("https://jatheon.com/wp-content/uploads/2018/03/404-image.png")))));
+		ResponseObject r = details.getOrDefault(id, new ResponseObject(new ResponseObject.Data(new ResponseObject.Data.Media(id, 0, new String[] {}, new ResponseObject.Data.Media.Title("", ""), new ResponseObject.Data.Media.CoverImage("https://jatheon.com/wp-content/uploads/2018/03/404-image.png")))));
+		if(r.data.media.id == 0)
+			requestInfoById(id);
+		return r;
 	}
 	
 	public static void requestInfoById(int id) {

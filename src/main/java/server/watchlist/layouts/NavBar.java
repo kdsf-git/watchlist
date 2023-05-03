@@ -1,6 +1,7 @@
 package server.watchlist.layouts;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -23,6 +24,7 @@ public class NavBar extends HorizontalLayout {
 		searchListBtn.addClickShortcut(Key.ENTER);
 		searchOnlineBtn = new Button("Search online");
 		searchOnlineBtn.addClickListener(event -> {parent.clickSearchOnlineBtn(searchTxt.getValue());});
+		searchOnlineBtn.addClickShortcut(Key.ENTER, KeyModifier.SHIFT);
 		
 		this.add(homeBtn, searchTxt, searchListBtn, searchOnlineBtn);
 	}
