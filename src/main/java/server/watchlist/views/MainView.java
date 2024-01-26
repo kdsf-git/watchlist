@@ -18,17 +18,22 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 import jakarta.servlet.http.Cookie;
 import server.watchlist.data.DataHandler;
+import server.watchlist.security.Auth;
+import server.watchlist.security.Session;
 
 @Route
-public class MainView extends VerticalLayout implements BeforeEnterObserver {
+public class MainView extends VerticalLayout implements Auth {
 	private Label loginLbl;
 	private TextField username;
 	private PasswordField password;
 	private Button okBtn;
 	private String key = "";
+	private Session session;
 	
     public MainView() {
     	DataHandler.refreshDetails();
@@ -42,29 +47,15 @@ public class MainView extends VerticalLayout implements BeforeEnterObserver {
     }
     
     @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-    	if(checkForExistingAuthCookie())
-    		event.forwardTo(ListView.class);
-    	DataHandler.refreshDetails();
+    public void setSession(Session s) {
+    	this.session = s;
     }
     
-    private boolean checkForExistingAuthCookie() {
-    	Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
-    	String username = null;
-    	String sessionId = null;
-    	for(Cookie cookie : cookies) {
-    		if(cookie.getName().equals("username")) {
-    			username = cookie.getValue();
-    		} else if(cookie.getName().equals("sessionId")) {
-    			sessionId = cookie.getValue();
-    		}
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+    	if(checkForExistingAuthCookie()) {
+    		event.forwardTo(ListView.class);
     	}
-    	try {
-			if(DataHandler.getSessionId(username).equals(sessionId)) {
-				return true;
-			}
-		} catch (Exception e) {}
-    	return false;
     }
     
     private String generateKey() {
@@ -91,17 +82,19 @@ public class MainView extends VerticalLayout implements BeforeEnterObserver {
     		Notification.show("key generated");
     	} else {
     		if(password.getValue().equals(key)) {
+    			Session s = new Session();
     			try {
-					DataHandler.getUser(username.getValue()).generateNewSessionId();
-					DataHandler.save();
+					DataHandler.getUser(username.getValue()).addSession(s);
 				} catch (Exception e) {
 					Notification.show("wrong username");
 					return;
 				}
-    			VaadinService.getCurrentResponse().addCookie(DataHandler.getUsernameCookie(username.getValue()));
-    			VaadinService.getCurrentResponse().addCookie(DataHandler.getSessionIdCookie(username.getValue()));
+    			
+    			VaadinService.getCurrentResponse().addCookie(DataHandler.makeUsernameCookie(username.getValue()));
+    			VaadinService.getCurrentResponse().addCookie(DataHandler.makeNewSessionIdCookie(s));
     			
     			UI.getCurrent().navigate(ListView.class);
+    			UI.getCurrent().getPage().reload();
     		} else {
     			Notification.show("wrong key");
     		}

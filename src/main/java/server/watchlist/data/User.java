@@ -6,16 +6,18 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import server.watchlist.security.Session;
+
 public class User {
 	private String name;
-	private String sessionId;
+	private ArrayList<Session> sessions;
 	private ArrayList<AnimeEntry> list;
 	private UserTitleLanguagePreference lang;
 	
 	@JsonCreator
-	public User(@JsonProperty("name") String name, @JsonProperty("sessionId") String sessionId, @JsonProperty("list") ArrayList<AnimeEntry> list, @JsonProperty("lang") UserTitleLanguagePreference lang) {
+	public User(@JsonProperty("name") String name, @JsonProperty("sessions") ArrayList<Session> sessions, @JsonProperty("list") ArrayList<AnimeEntry> list, @JsonProperty("lang") UserTitleLanguagePreference lang) {
 		this.name = name;
-		this.sessionId = sessionId;
+		this.sessions = sessions;
 		this.list = list;
 		this.lang = lang;
 	}
@@ -28,14 +30,9 @@ public class User {
 		return null;
 	}
 	
-	@JsonProperty("sessionId")
-	public String getSessionId() {
-		return sessionId;
-	}
-	
-	public String generateNewSessionId() {
-		sessionId = UUID.randomUUID().toString();
-		return sessionId;
+	@JsonProperty("sessions")
+	public ArrayList<Session> getSessions() {
+		return sessions;
 	}
 	
 	@JsonProperty("name")
@@ -53,8 +50,34 @@ public class User {
 		return lang;
 	}
 	
-	@Override
-	public String toString() {
-		return "{name: " + name + ", sessionId: " + sessionId + ", list: " + list + "}";
+	public void setLang(UserTitleLanguagePreference lang) {
+		this.lang = lang;
+	}
+	
+	public Session getValidSession(String sessionId) {
+		for(int i = 0; i < sessions.size(); i++) {
+			if(sessions.get(i).isValid(sessionId))
+				return sessions.get(i);
+		}
+		return null;
+	}
+	
+	public void addSession(Session s) {
+		if(s == null)
+			return;
+		sessions.add(s);
+		DataHandler.save();
+	}
+	
+	public void removeSession(Session s) {
+		if(s == null)
+			return;
+		sessions.remove(s);
+		DataHandler.save();
+	}
+	
+	public void removeAllSessions() {
+		sessions = new ArrayList<Session>();
+		DataHandler.save();
 	}
 }

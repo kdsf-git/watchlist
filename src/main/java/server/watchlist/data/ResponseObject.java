@@ -4,40 +4,94 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ResponseObject {
-	public Data data = new Data(new Data.Media(0, 0, new String[] {}, new Data.Media.Title("", ""), new Data.Media.CoverImage("")));
+	private Data data = new Data(new Data.Media(0, 0, new String[] {}, new Data.Media.Title("", ""), new Data.Media.CoverImage(""), ""));
+	private boolean invalid = false;
 	
 	@JsonCreator
-	public ResponseObject(@JsonProperty("Data") Data data) {
+	public ResponseObject(@JsonProperty("data") Data data) {
 		this.data = data;
 	}
 	
+	public ResponseObject(int id) {
+		data.media.id = id;
+		invalid = true;
+	}
+	
+	public int getId() {
+		return data.media.id;
+	}
+	
+	public int getEpisodes() {
+		return data.media.episodes;
+	}
+	
+	public String[] getGenres() {
+		if(data.media.genres == null)
+			return new String[0];
+		return data.media.genres;
+	}
+	
+	public String getRomaji() {
+		if(data.media.title.romaji == null) {
+			if(data.media.title.english == null)
+				return "#" + data.media.id;
+			return data.media.title.english;
+		}
+		return data.media.title.romaji;
+	}
+	
+	public String getEnglish() {
+		if(data.media.title.english == null) {
+			if(data.media.title.romaji == null)
+				return "#" + data.media.id;
+			return data.media.title.romaji;
+		}
+		return data.media.title.english;
+	}
+	
+	public String getMedium() {
+		if(data.media.coverImage.medium == null)
+			return "https://jatheon.com/wp-content/uploads/2018/03/404-image.png";
+		return data.media.coverImage.medium;
+	}
+	
+	public String getSiteUrl() {
+		return data.media.siteUrl;
+	}
+	
+	public boolean isValid() {
+		return !invalid;
+	}
+	
 	public static class Data {
-		public Media media;
+		private Media media;
 		
 		@JsonCreator
-		public Data(@JsonProperty("Media") Media media2) {
-			this.media = media2;
+		public Data(@JsonProperty("Media") Media media) {
+			this.media = media;
 		}
 		
 		public static class Media {
-			public int id;
-			public int episodes;
-			public String[] genres;
-			public Title title;
-			public CoverImage coverImage;
+			private int id;
+			private int episodes;
+			private String[] genres;
+			private Title title;
+			private CoverImage coverImage;
+			private String siteUrl;
 			
 			@JsonCreator
-			public Media(@JsonProperty("id") int id, @JsonProperty("episodes") int episodes, @JsonProperty("genres") String[] genres, @JsonProperty("title") Title title, @JsonProperty("coverImage") CoverImage coverImage) {
+			public Media(@JsonProperty("id") int id, @JsonProperty("episodes") int episodes, @JsonProperty("genres") String[] genres, @JsonProperty("title") Title title, @JsonProperty("coverImage") CoverImage coverImage, @JsonProperty("siteUrl") String siteUrl) {
 				this.id = id;
 				this.episodes = episodes;
 				this.genres = genres;
 				this.title = title;
 				this.coverImage = coverImage;
+				this.siteUrl = siteUrl;
 			}
 			
 			public static class Title {
-				public String romaji;
-				public String english;
+				private String romaji;
+				private String english;
 				
 				@JsonCreator
 				public Title(@JsonProperty("romaji") String romaji, @JsonProperty("english") String english) {
@@ -47,7 +101,7 @@ public class ResponseObject {
 			}
 			
 			public static class CoverImage {
-				public String medium;
+				private String medium;
 				
 				@JsonCreator
 				public CoverImage(@JsonProperty("medium") String medium) {

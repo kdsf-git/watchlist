@@ -8,10 +8,18 @@ import java.nio.file.StandardOpenOption;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
+
 import server.watchlist.data.DataHandler;
 
 @SpringBootApplication
-public class Application {
+@Theme(variant = Lumo.DARK)
+public class Application implements AppShellConfigurator {
+	public static final String version = "v2.0";
 
     public static void main(String[] args) {
     	try {
@@ -25,7 +33,7 @@ public class Application {
     
     public static void log(String s) {
     	try {
-			Files.write(Path.of("log.txt"), ("\n" + s).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
+			Files.write(Path.of("log.txt"), (s + "\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

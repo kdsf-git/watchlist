@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AnimeEntry {
 	private boolean finished;
+	private boolean watching;
 	private int id;
 	private String note;
 	
 	@JsonCreator
 	public AnimeEntry(@JsonProperty("id") int id) {
 		finished = false;
+		watching = false;
 		this.id = id;
 		note = "";
 	}
@@ -40,8 +42,13 @@ public class AnimeEntry {
 		this.note = note;
 	}
 	
-	@Override
-	public String toString() {
-		return "{finished: " + finished + ", id: " + id + ", note: " + note + "}";
+	@JsonProperty("watching")
+	public void setWatching(Boolean watching) {
+		this.watching = watching;
+	}
+
+	@JsonProperty("watching")
+	public Boolean getWatching() {
+		return watching;
 	}
 }
