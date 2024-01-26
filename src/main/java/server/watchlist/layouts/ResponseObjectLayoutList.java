@@ -146,7 +146,7 @@ public class ResponseObjectLayoutList extends ArrayList<ResponseObjectLayout> im
 				str = arg0.getResponseObject().getEnglish();
 				break;
 			case romaji:
-				str = arg0.getResponseObject().getEnglish();
+				str = arg0.getResponseObject().getRomaji();
 				break;
 			}
 			return str.compareToIgnoreCase(arg1.getResponseObject().getEnglish());
